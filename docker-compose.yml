@@ -1,0 +1,31 @@
+version: '3.0'
+
+services:
+  apache2:
+    build: .
+    command: apache2
+    ports:
+      - 8808:80
+    volumes:
+      - ./:/var/www/app
+      - ./rootfs/usr/local/apache2/conf:/etc/apache2/sites-enabled/
+      - php-sock:/shared/
+
+  php-fpm:
+    build: .
+    command: php-fpm
+    volumes:
+      - ./:/var/www/app
+      - php-sock:/shared/
+
+  db:
+    image: mariadb
+    restart: always
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+
+volumes:
+  php-sock:
+  db:
